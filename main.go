@@ -16,11 +16,20 @@ type invader struct {
 	x         int
 }
 
+func generateInvader() string {
+	var letterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+	invader := rand.Intn(len(letterRunes))
+
+	return string(letterRunes[invader])
+
+}
+
 func newInvader(width int) invader {
 	x := rand.Intn(width)
 
 	return invader{
-		apperance: "A",
+		apperance: generateInvader(),
 		x:         x,
 	}
 
@@ -41,7 +50,7 @@ func (m model) Init() tea.Cmd {
 
 func initialModel() model {
 	return model{
-		stopwatch:    stopwatch.NewWithInterval(time.Duration(500) * time.Millisecond),
+		stopwatch:    stopwatch.NewWithInterval(time.Duration(800) * time.Millisecond),
 		playground:   [][]string{},
 		width:        30,
 		height:       20,
@@ -56,14 +65,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		{
 			switch msg.String() {
-			case "ctrl+c", "q":
+
+			case "ctrl+c":
 				return m, tea.Quit
 			}
 		}
 
 	}
 	var cmd tea.Cmd
-
 	m.stopwatch, cmd = m.stopwatch.Update(msg)
 	i := newInvader(m.width)
 
