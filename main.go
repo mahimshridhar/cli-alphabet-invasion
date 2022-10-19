@@ -35,6 +35,10 @@ func newInvader(width int) invader {
 
 }
 
+func detectCollision(m *model) bool {
+	return len(m.invaders) == m.height
+}
+
 type model struct {
 	stopwatch    stopwatch.Model
 	playground   [][]string
@@ -42,6 +46,8 @@ type model struct {
 	height       int
 	borderSymbol string
 	invaders     []invader
+	score        int
+	gameOver     bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -50,12 +56,14 @@ func (m model) Init() tea.Cmd {
 
 func initialModel() model {
 	return model{
-		stopwatch:    stopwatch.NewWithInterval(time.Duration(800) * time.Millisecond),
+		stopwatch:    stopwatch.NewWithInterval(time.Duration(400) * time.Millisecond),
 		playground:   [][]string{},
 		width:        30,
 		height:       20,
 		borderSymbol: "#",
 		invaders:     []invader{},
+		score:        0,
+		gameOver:     false,
 	}
 }
 
@@ -72,11 +80,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	}
+
 	var cmd tea.Cmd
 	m.stopwatch, cmd = m.stopwatch.Update(msg)
 	i := newInvader(m.width)
 
-	m.invaders = append(m.invaders, i)
+	m.invaders = append([]invader{i}, m.invaders...)
+
+	if detectCollision(&m) {
+		m.gameOver = true
+		return m, tea.Quit
+	}
 
 	return m, cmd
 }
@@ -97,7 +111,13 @@ func (m model) View() string {
 
 	s = s + sPlayground
 
-	s = s + "Press q to quit\n\n"
+	s = s + "Press ctrl + c to quit\n\n"
+
+	s = s + RenderScore(m.score)
+
+	if m.gameOver {
+		s = s + "\nGame Over.\n\n"
+	}
 
 	// Send the UI for rendering
 	return s

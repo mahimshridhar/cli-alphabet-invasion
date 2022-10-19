@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 func RenderPlayground(m *model) {
 	for i := 0; i < m.height; i++ {
@@ -14,4 +17,11 @@ func RenderInvader(m *model) {
 	for i, val := range m.invaders {
 		m.playground[i][val.x] = val.apperance
 	}
+}
+
+func RenderScore(score int) string {
+
+	scoreStr := fmt.Sprintf("Score %d: ", score)
+
+	return scoreStr + "\n"
 }
