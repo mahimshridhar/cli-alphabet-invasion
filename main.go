@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/stopwatch"
@@ -11,7 +12,11 @@ import (
 )
 
 type model struct {
-	stopwatch stopwatch.Model
+	stopwatch    stopwatch.Model
+	playground   [][]string
+	width        int
+	height       int
+	borderSymbol string
 }
 
 func (m model) Init() tea.Cmd {
@@ -25,7 +30,11 @@ func (m model) Init() tea.Cmd {
 
 func initialModel() model {
 	return model{
-		stopwatch: stopwatch.NewWithInterval(time.Duration(80) * time.Millisecond),
+		stopwatch:    stopwatch.NewWithInterval(time.Duration(80) * time.Millisecond),
+		playground:   [][]string{},
+		width:        30,
+		height:       20,
+		borderSymbol: "#",
 	}
 }
 
@@ -47,6 +56,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	// The header
 	s := "Welcome to cli tetris\n\n"
+
+	sPlayground := ""
+
+	RenderPlayground(&m)
+
+	for _, row := range m.playground {
+		sPlayground += strings.Join(row, "") + "\n"
+	}
+
+	s = s + sPlayground
 
 	s = s + "Press q to quit\n\n"
 
