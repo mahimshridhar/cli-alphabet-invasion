@@ -7,17 +7,17 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func RenderPlayground(m *model) {
+func RenderPlayground(m *Model) {
 	for i := 0; i < m.height; i++ {
-		m.playground = append(m.playground, strings.Split(strings.Repeat(" ", m.width), ""))
+		m.batteground = append(m.batteground, strings.Split(strings.Repeat(" ", m.width), ""))
 	}
-	m.playground = append(m.playground, strings.Split(strings.Repeat(m.borderSymbol, m.width), ""))
+	m.batteground = append(m.batteground, strings.Split(strings.Repeat(m.borderSymbol, m.width), ""))
 
 }
 
-func RenderInvader(m *model) {
+func RenderInvader(m *Model) {
 	for i, val := range m.invaders {
-		m.playground[i][val.position] = val.apperance
+		m.batteground[i][val.position] = val.apperance
 	}
 }
 
