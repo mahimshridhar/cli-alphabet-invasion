@@ -9,10 +9,6 @@ import (
 
 type TickMsg time.Time
 
-func detectCollision(m *Model) bool {
-	return len(m.invaders) == m.height
-}
-
 type Model struct {
 	batteground  [][]string
 	width        int
@@ -57,6 +53,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if string(msg.Runes) == m.invaders[len(m.invaders)-1].apperance {
 				m.invaders = m.invaders[:len(m.invaders)-1]
 				m.score++
+
 			}
 			return m, nil
 		}
@@ -71,7 +68,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		m.invaders = append([]Invader{i}, m.invaders...)
 
-		if detectCollision(&m) {
+		if DetectCollision(&m) {
 			m.gameOver = true
 			return m, tea.Quit
 
