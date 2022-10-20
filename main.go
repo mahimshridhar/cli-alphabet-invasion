@@ -18,7 +18,6 @@ type invader struct {
 }
 
 func generateInvader() string {
-	//alpha best invaders invaders
 	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 	invader := rand.Intn(len(letterRunes))
@@ -113,7 +112,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := "Welcome to cli tetris\n\n"
+	// var sb strings.Builder
+
+	// s := "Welcome to cli tetris\n\n"
+
+	s := RenderTitle() + "\n"
 
 	sPlayground := ""
 
@@ -127,12 +130,12 @@ func (m model) View() string {
 
 	s = s + sPlayground
 
-	s = s + "Press ctrl + c to quit\n\n"
+	s = s + RenderScore(m.score) + "\n"
 
-	s = s + RenderScore(m.score)
+	s = s + RenderQuitcommand() + "\n"
 
 	if m.gameOver {
-		s = s + "\nGame Over.\n\n"
+		s = s + RenderGameOver() + "\n"
 	}
 
 	// Send the UI for rendering
