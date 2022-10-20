@@ -3,16 +3,17 @@ package main
 import "math/rand"
 
 type Invader struct {
-	apperance string
-	position  int
+	appearance string
+	position   int
 }
 
+const (
+	ALPHABET_INVADERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+)
+
 func GenerateInvader() string {
-	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-	invader := rand.Intn(len(letterRunes))
-
-	return string(letterRunes[invader])
+	invader := rand.Intn(len(ALPHABET_INVADERS))
+	return string(ALPHABET_INVADERS[invader])
 
 }
 
@@ -20,8 +21,8 @@ func NewInvader(width int) Invader {
 	x := rand.Intn(width)
 
 	return Invader{
-		apperance: GenerateInvader(),
-		position:  x,
+		appearance: GenerateInvader(),
+		position:   x,
 	}
 
 }

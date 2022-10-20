@@ -50,7 +50,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyRunes:
 			//attack the invader
-			if string(msg.Runes) == m.invaders[len(m.invaders)-1].apperance {
+			if string(msg.Runes) == m.invaders[len(m.invaders)-1].appearance {
 				m.invaders = m.invaders[:len(m.invaders)-1]
 				m.score++
 
@@ -82,30 +82,37 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	// var sb strings.Builder
+	var sb strings.Builder
 
-	s := RenderTitle() + "\n"
+	sb.WriteString(RenderTitle())
+	sb.WriteRune('\n')
 
-	sPlayground := ""
+	var sPlayground strings.Builder
 
 	RenderPlayground(&m)
 
 	RenderInvader(&m)
 
 	for _, row := range m.batteground {
-		sPlayground += strings.Join(row, "") + "\n"
+		sPlayground.WriteString(strings.Join(row, ""))
+		sPlayground.WriteRune('\n')
 	}
 
-	s = s + sPlayground
+	sb.WriteString(sPlayground.String())
+	sPlayground.WriteRune('\n')
 
-	s = s + RenderScore(m.score) + "\n"
+	sb.WriteString(RenderScore(m.score))
+	sb.WriteRune('\n')
+	sb.WriteRune('\n')
 
-	s = s + RenderQuitcommand() + "\n"
+	sb.WriteString(RenderQuitcommand())
+	sb.WriteRune('\n')
 
 	if m.gameOver {
-		s = s + RenderGameOver() + "\n"
+		sb.WriteString(RenderGameOver())
+		sb.WriteRune('\n')
 	}
 
 	// Send the UI for rendering
-	return s
+	return sb.String()
 }

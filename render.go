@@ -17,7 +17,7 @@ func RenderPlayground(m *Model) {
 
 func RenderInvader(m *Model) {
 	for i, val := range m.invaders {
-		m.batteground[i][val.position] = val.apperance
+		m.batteground[i][val.position] = val.appearance
 	}
 }
 
