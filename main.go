@@ -7,17 +7,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/bubbles/stopwatch"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+type TickMsg time.Time
+
 type invader struct {
 	apperance string
-	x         int
+	position  int
 }
 
 func generateInvader() string {
-	var letterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	//invaders
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 	invader := rand.Intn(len(letterRunes))
 
@@ -30,7 +32,7 @@ func newInvader(width int) invader {
 
 	return invader{
 		apperance: generateInvader(),
-		x:         x,
+		position:  x,
 	}
 
 }
@@ -40,7 +42,6 @@ func detectCollision(m *model) bool {
 }
 
 type model struct {
-	stopwatch    stopwatch.Model
 	playground   [][]string
 	width        int
 	height       int
@@ -50,13 +51,19 @@ type model struct {
 	gameOver     bool
 }
 
+func (m model) tick() tea.Cmd {
+	return tea.Tick(time.Second/3, func(t time.Time) tea.Msg {
+		return TickMsg(t)
+	})
+}
+
 func (m model) Init() tea.Cmd {
-	return m.stopwatch.Init()
+	return m.tick()
+
 }
 
 func initialModel() model {
 	return model{
-		stopwatch:    stopwatch.NewWithInterval(time.Duration(400) * time.Millisecond),
 		playground:   [][]string{},
 		width:        30,
 		height:       20,
@@ -71,32 +78,41 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
 	case tea.KeyMsg:
-		{
-			switch msg.String() {
+		switch msg.Type {
 
-			case "ctrl+c":
-				return m, tea.Quit
+		case tea.KeyRunes:
+			//attack the invader
+			if string(msg.Runes) == m.invaders[len(m.invaders)-1].apperance {
+				m.invaders = m.invaders[:len(m.invaders)-1]
+				m.score++
 			}
+			return m, nil
+		}
+		switch msg.String() {
+		//quit game
+		case "ctrl+c":
+			return m, tea.Quit
+
+		}
+	case TickMsg:
+		i := newInvader(m.width)
+
+		m.invaders = append([]invader{i}, m.invaders...)
+
+		if detectCollision(&m) {
+			m.gameOver = true
+			return m, tea.Quit
+
 		}
 
+		return m, m.tick()
+
 	}
 
-	var cmd tea.Cmd
-	m.stopwatch, cmd = m.stopwatch.Update(msg)
-	i := newInvader(m.width)
-
-	m.invaders = append([]invader{i}, m.invaders...)
-
-	if detectCollision(&m) {
-		m.gameOver = true
-		return m, tea.Quit
-	}
-
-	return m, cmd
+	return m, nil
 }
 
 func (m model) View() string {
-	// The header
 	s := "Welcome to cli tetris\n\n"
 
 	sPlayground := ""
