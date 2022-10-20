@@ -18,7 +18,7 @@ type invader struct {
 }
 
 func generateInvader() string {
-	//invaders
+	//alpha best invaders invaders
 	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 	invader := rand.Intn(len(letterRunes))
