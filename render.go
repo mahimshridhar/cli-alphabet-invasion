@@ -9,20 +9,19 @@ import (
 
 func RenderPlayground(m *Model) {
 	for i := 0; i < m.height; i++ {
-		m.batteground = append(m.batteground, strings.Split(strings.Repeat(" ", m.width), ""))
+		m.battleground = append(m.battleground, strings.Split(strings.Repeat(" ", m.width), ""))
 	}
-	m.batteground = append(m.batteground, strings.Split(strings.Repeat(m.borderSymbol, m.width), ""))
+	m.battleground = append(m.battleground, strings.Split(strings.Repeat(m.borderSymbol, m.width), ""))
 
 }
 
 func RenderInvader(m *Model) {
 	for i, val := range m.invaders {
-		m.batteground[i][val.position] = val.appearance
+		m.battleground[i][val.position] = val.appearance
 	}
 }
 
 func RenderScore(score int) string {
-
 	scoreStr := fmt.Sprintf("Score: %d ", score)
 	ts := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("10"))
 
